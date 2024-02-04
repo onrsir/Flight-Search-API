@@ -1,6 +1,7 @@
 
 ## Description
-This project involves the development of a backend API for a flight search application. The API is responsible for managing and retrieving information related to flights and airports.
+The core of our project revolves around the creation of a robust Backend API tailored for a Flight Search Application. This API serves as the central hub for handling and delivering comprehensive data pertaining to flights and airports.
+
 
 ## Prerequisites
 Before running the project, make sure to configure the following settings in the `application.properties` file.

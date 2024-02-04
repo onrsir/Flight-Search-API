@@ -10,83 +10,67 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Objects;
-
 @Service
 public class FlightService {
+
     @Autowired
     private IFlightDal flightDal;
-    private final String apiUrl = "https://localhost:8080/flight/api/flights";
-    public FlightService(IFlightDal flightDal){
+    private final String baseUrl = "https://localhost:8080/flight/api/flights";
+
+    public FlightService(IFlightDal flightDal) {
         this.flightDal = flightDal;
     }
 
     @Scheduled(cron = "0 0 * * * *")
-    public void saveFlightData(){
+    public void saveFlightData() {
         RestTemplate restTemplate = new RestTemplate();
-        FlightsApplication response = restTemplate.getForObject(apiUrl,FlightsApplication.class);
+        FlightsApplication response = restTemplate.getForObject(baseUrl, FlightsApplication.class);
     }
 
-
-
-    public Flight findFlightsTwoWay(String departureAirport, String arrivalAirport, String departureTime, String returnTime){
-        Flight myFlightObject = new Flight();
-        Flight mySearchFlight = new Flight();
-        mySearchFlight.setDepartureAirport(departureAirport);
-        mySearchFlight.setArrivalAirport(arrivalAirport);
-        mySearchFlight.setDepartureTime(departureTime);
-        mySearchFlight.setReturnTime(returnTime);
+    public Flight findFlightByCriteria(String departureAirport, String arrivalAirport, String departureTime, String returnTime) {
         List<Flight> allFlights = findAllFlights();
-        for (Flight x : allFlights
-             ) {
-            if(Objects.equals(x.getDepartureAirport(), mySearchFlight.getDepartureAirport()) &&
-                    Objects.equals(x.getArrivalAirport(), mySearchFlight.getArrivalAirport()) &&
-                    Objects.equals(x.getDepartureTime(), mySearchFlight.getDepartureTime()) &&
-                    Objects.equals(x.getReturnTime(), mySearchFlight.getReturnTime())){
-                myFlightObject = x;
-            }
-            else {
-                myFlightObject = null;
-            }
 
+        for (Flight flight : allFlights) {
+            if (Objects.equals(flight.getDepartureAirport(), departureAirport) &&
+                    Objects.equals(flight.getArrivalAirport(), arrivalAirport) &&
+                    Objects.equals(flight.getDepartureTime(), departureTime) &&
+                    Objects.equals(flight.getReturnTime(), returnTime)) {
+                return flight;
+            }
         }
-        return myFlightObject;
+
+        return null;
     }
-    public Flight findFlightsOneWay(String departureAirport, String arrivalAirport, String departureTime){
-        Flight myFlightObject = new Flight();
-        Flight mySearchFlight = new Flight();
-        mySearchFlight.setDepartureAirport(departureAirport);
-        mySearchFlight.setArrivalAirport(arrivalAirport);
-        mySearchFlight.setDepartureTime(departureTime);
-        mySearchFlight.setReturnTime(null);
+
+    public Flight findFlightByOneWayCriteria(String departureAirport, String arrivalAirport, String departureTime) {
         List<Flight> allFlights = findAllFlights();
-        for (Flight x : allFlights
-        ) {
-            if(Objects.equals(x.getDepartureAirport(), mySearchFlight.getDepartureAirport()) &&
-                    Objects.equals(x.getArrivalAirport(), mySearchFlight.getArrivalAirport()) &&
-                    Objects.equals(x.getDepartureTime(), mySearchFlight.getDepartureTime()) &&
-                    Objects.equals(x.getReturnTime(), mySearchFlight.getReturnTime())){
-                double newCost = x.getCost()/2;
-                mySearchFlight.setCost(newCost);
-                myFlightObject = x;
-            }
-            else {
-                myFlightObject = null;
-            }
 
+        for (Flight flight : allFlights) {
+            if (Objects.equals(flight.getDepartureAirport(), departureAirport) &&
+                    Objects.equals(flight.getArrivalAirport(), arrivalAirport) &&
+                    Objects.equals(flight.getDepartureTime(), departureTime)) {
+                double newCost = flight.getCost() / 2;
+                flight.setCost(newCost);
+                return flight;
+            }
         }
-        return myFlightObject;
+
+        return null;
     }
-    public Flight addFlight(Flight flight){
+
+    public Flight addFlight(Flight flight) {
         return flightDal.save(flight);
     }
-    public List<Flight> findAllFlights(){
+
+    public List<Flight> findAllFlights() {
         return flightDal.findAll();
     }
-    public Flight getFlightById(long flightId){
-        return flightDal.findById(flightId).get();
+
+    public Flight getFlightById(long flightId) {
+        return flightDal.findById(flightId).orElse(null);
     }
 
-    public void deleteFlightById(long flightId){
+    public void deleteFlightById(long flightId) {
         flightDal.deleteById(flightId);
     }
 }

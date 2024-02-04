@@ -14,7 +14,7 @@ spring.datasource.driverClassName=org.h2.Driver
 spring.datasource.username=your_database_username
 spring.datasource.password=your_database_password
 spring.h2.console.enabled=true
-
+```
 ## Technologies Used
 - Java (Version 17)
 - Spring Boot

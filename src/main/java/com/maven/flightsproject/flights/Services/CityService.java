@@ -29,9 +29,6 @@ public class CityService {
     public void deleteCityById(long cityId){
         cityDal.deleteById(cityId);
     }
-    public void deleteCityByName(City city){
-        cityDal.delete(city);
-    }
 
 
 }

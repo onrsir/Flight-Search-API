@@ -89,7 +89,4 @@ public class FlightService {
     public void deleteFlightById(long flightId){
         flightDal.deleteById(flightId);
     }
-    public void deleteFlightByName(Flight flight){
-        flightDal.delete(flight);
-    }
 }

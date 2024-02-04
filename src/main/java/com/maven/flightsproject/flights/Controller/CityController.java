@@ -25,11 +25,16 @@ public class CityController {
         List<City> allCities = cityService.findAllCities();
         return new ResponseEntity<List<City>>(allCities,HttpStatus.OK);
     }
-    @GetMapping("/{}")
-    public ResponseEntity<City> getCityId(@PathVariable("id") Long id){
+    @GetMapping("/{id}")
+    public ResponseEntity<City> getCityById(@PathVariable("id") Long id) {
         City cityById = cityService.getCityById(id);
-        return new ResponseEntity<City>(cityById,HttpStatus.OK);
+        if (cityById != null) {
+            return new ResponseEntity<City>(cityById, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
+
     @DeleteMapping("delete/{id}")
     public ResponseEntity<Void> deleteCityById(@PathVariable("id") Long id){
         cityService.deleteCityById(id);
